@@ -1,34 +1,53 @@
 import streamlit as st
 import pandas as pd
 import joblib
-from sklearn.metrics import confusion_matrix, classification_report
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.metrics import classification_report, confusion_matrix
 
-st.title("Heart Disease Prediction - ML Models")
+st.set_page_config(page_title="Heart Disease ML App", layout="centered")
 
-uploaded_file = st.file_uploader("heart.csv", type=["csv"])
+st.title("❤️ Heart Disease Prediction – ML Models")
+
+st.write("Upload test CSV data, select a model, and view performance metrics.")
+
+uploaded_file = st.file_uploader(
+    "heart.csv",
+    type=["csv"]
+)
 
 model_name = st.selectbox(
     "Select Model",
-    ["Logistic Regression", "Decision Tree", "KNN",
-     "Naive Bayes", "Random Forest", "XGBoost"]
+    [
+        "Logistic Regression",
+        "Decision Tree",
+        "KNN",
+        "Naive Bayes",
+        "Random Forest",
+        "XGBoost"
+    ]
 )
 
-if uploaded_file:
+if uploaded_file is not None:
     data = pd.read_csv(uploaded_file)
-    X = data.drop("target", axis=1)
-    y = data["target"]
 
-    model = joblib.load(f"model/{model_name}.pkl")
-    y_pred = model.predict(X)
+    if "target" not in data.columns:
+        st.error("❌ CSV must contain a 'target' column.")
+    else:
+        X = data.drop("target", axis=1)
+        y = data["target"]
 
-    st.subheader("Evaluation Metrics")
-    st.text(classification_report(y, y_pred))
+        model = joblib.load(f"model/{model_name}.pkl")
+        y_pred = model.predict(X)
 
-    st.subheader("Confusion Matrix")
-    cm = confusion_matrix(y, y_pred)
-    fig, ax = plt.subplots()
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
-    st.pyplot(fig)
+        st.subheader("📊 Classification Report")
+        st.text(classification_report(y, y_pred))
 
+        st.subheader("📉 Confusion Matrix")
+        cm = confusion_matrix(y, y_pred)
+
+        fig, ax = plt.subplots()
+        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
+        ax.set_xlabel("Predicted")
+        ax.set_ylabel("Actual")
+        st.pyplot(fig)
