@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 st.title("Heart Disease Prediction - ML Models")
 
-uploaded_file = st.file_uploader("Upload Test CSV File", type=["csv"])
+uploaded_file = st.file_uploader("Heart_Disease_Prediction.csv", type=["csv"])
 
 model_name = st.selectbox(
     "Select Model",
