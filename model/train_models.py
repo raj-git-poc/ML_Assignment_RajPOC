@@ -55,7 +55,9 @@ for name, model in models.items():
         "MCC": matthews_corrcoef(y_test, y_pred)
     })
 
-    joblib.dump(model, f"model/{name}.pkl")
+    #joblib.dump(model, f"model/{name}.pkl")
+    joblib.load(f"model/{model_name}.pkl")
+
 
 pd.DataFrame(results).to_csv("model/model_metrics.csv", index=False)
 
