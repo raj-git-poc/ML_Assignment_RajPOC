@@ -5,11 +5,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix
 
-st.set_page_config(page_title="Heart Disease ML App", layout="centered")
+st.set_page_config(page_title="Heart Disease ML App")
 
 st.title("❤️ Heart Disease Prediction – ML Models")
-
-st.write("Upload test CSV data, select a model, and view performance metrics.")
 
 uploaded_file = st.file_uploader(
     "heart.csv",
@@ -32,7 +30,7 @@ if uploaded_file is not None:
     data = pd.read_csv(uploaded_file)
 
     if "target" not in data.columns:
-        st.error("❌ CSV must contain a 'target' column.")
+        st.error("CSV must contain a 'target' column")
     else:
         X = data.drop("target", axis=1)
         y = data["target"]
@@ -40,14 +38,12 @@ if uploaded_file is not None:
         model = joblib.load(f"model/{model_name}.pkl")
         y_pred = model.predict(X)
 
-        st.subheader("📊 Classification Report")
+        st.subheader("Classification Report")
         st.text(classification_report(y, y_pred))
 
-        st.subheader("📉 Confusion Matrix")
+        st.subheader("Confusion Matrix")
         cm = confusion_matrix(y, y_pred)
 
         fig, ax = plt.subplots()
         sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
-        ax.set_xlabel("Predicted")
-        ax.set_ylabel("Actual")
         st.pyplot(fig)
